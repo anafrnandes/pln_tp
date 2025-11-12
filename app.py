@@ -1,24 +1,30 @@
 from transformers import pipeline
 
-# Carrega o teu modelo que acabaste de treinar
-MODEL_PATH = "meu-modelo-de-emocoes-final"
+# Carrega o teu modelo treinado
+MODEL_PATH = "./meu-modelo-de-emocoes-final"
 
-# O "pipeline" é a forma mais fácil de USAR um modelo
-# device=0 força-o a usar a GPU do Colab para ser rápido!
-classifier = pipeline("text-classification", model=MODEL_PATH, device=0)
+print("A carregar o 'DJ de Emoções' (isto pode demorar um momento)...")
+
+classifier = pipeline(
+    "text-classification",
+    model=MODEL_PATH,
+    # device=0
+    top_k=None  # <--- O COMANDO NOVO
+)
 
 print("Modelo 'DJ de Emoções' carregado!")
-print("Classes: 0:sadness, 1:joy, 2:love, 3:anger, 4:fear, 5:surprise")
+print("Classes: sadness, joy, love, anger, fear, surprise")
 print("Escreve uma letra de música (ou 'sair' para terminar):")
 
-# Dicionário para mapear os IDs para os nomes das emoções
+# Dicionário para "traduzir" as labels que o modelo dá
+# (o modelo de classificação dá "LABEL_0", "LABEL_1", etc.)
 labels = {
-    0: "sadness",
-    1: "joy",
-    2: "love",
-    3: "anger",
-    4: "fear",
-    5: "surprise"
+    "LABEL_0": "sadness",
+    "LABEL_1": "joy",
+    "LABEL_2": "love",
+    "LABEL_3": "anger",
+    "LABEL_4": "fear",
+    "LABEL_5": "surprise"
 }
 
 while True:
@@ -26,15 +32,26 @@ while True:
     if lyric.lower() == 'sair':
         break
 
-    result = classifier(lyric)[0]
+    # O resultado agora é uma LISTA de 6 dicionários
+    # Ex: [[{'label': 'LABEL_0', 'score': 0.1}, {'label': 'LABEL_1', 'score': 0.8}, ...]]
+    results = classifier(lyric)[0]
 
-    # Formata o resultado para ser mais legível
-    label_id = int(result['label'].split('_')[-1]) # Ex: "LABEL_1" -> 1
-    score = result['score'] * 100
+    # Vamos ordenar a lista pelo score, do maior para o menor
+    results.sort(key=lambda x: x['score'], reverse=True)
 
-    # Converte o ID da label para o nome da emoção
-    emotion_name = labels.get(label_id, "desconhecida") # .get() é mais seguro
+    print("Painel de Emoções ")
 
-    print(f"Emoção detetada: {emotion_name.upper()} (Confiança: {score:.2f}%)")
+    for i, res in enumerate(results):
+        label_name = labels.get(res['label'], res['label'])  # Traduz o nome
+        score = res['score'] * 100
 
-print("Até à Próxima Música")
+        # Formatação para ficar bonito no terminal
+        # O \t é um "tab" para alinhar as percentagens
+        if i == 0:
+            print(f"🥇 {label_name.upper()}:\t{score:6.2f}%  (Emoção Principal)")
+        else:
+            print(f"   {label_name.lower()}:\t{score:6.2f}%")
+
+    print("-" * 34)
+
+print("Até à próxima!")
