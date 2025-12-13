@@ -53,22 +53,32 @@ Este projeto foi desenvolvido em Python 3.11 e utiliza PyTorch com suporte para 
     pip install transformers datasets evaluate accelerate scikit-learn nltk
     ```
 
-### 2. Como Usar a Aplicação (`app.py`)
+### 2. Como Usar a Aplicação 
 
-O modelo treinado (`meu-modelo-de-emocoes-final`) já está incluído neste repositório (ou foi descarregado separadamente) e é ignorado pelo `.gitignore`.
+Existem duas formas de interagir com o modelo:
 
-Para correr o classificador interativo:
-
+#### Interface Web (Recomendado)
+Lança uma interface gráfica no browser, com suporte a tradução PT/EN e visualização de gráficos.
+```bash
+python app_web.py
+```
+#### Modo Terminal (Legacy)
+Interação simples via linha de comandos (apenas Inglês).
 ```bash
 python app.py
 ```
-**Nota:** O modelo foi treinado no dataset emotion (em inglês). A aplicação espera, por isso, input em inglês para classificar corretamente.
+
+### 3. Reproduzir a Análise Científica
+Para gerar a **Matriz de Confusão** (`matriz_confusao.png`) apresentada no relatório:
+```bash
+python analise_cientifica.py
+```
 
 ---
 
 ##  Recursos Utilizados
 
-* **Bibliotecas Principais:** `transformers` (Hugging Face), `torch` (PyTorch), `datasets` (Hugging Face), `evaluate` (Hugging Face).
+* **Bibliotecas Principais:** `transformers` (Hugging Face), `torch` (PyTorch), `datasets` (Hugging Face), `evaluate` (Hugging Face), `gradio` (Interface), `deep-translator` (Tradução).
 * **Modelo Base (LLM):** `bert-base-uncased`.
 * **Dataset:** `emotion` (disponível no Hugging Face Hub).
 * **Ambiente de Treino:** Google Colab (com GPU Tesla T4).
