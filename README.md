@@ -4,7 +4,6 @@ Projeto desenvolvido no âmbito da Unidade Curricular de Processamento de Lingua
 * **Número:** 51648
 * **Professor:** João Paulo Da Costa Cordeiro
 * **Curso:** Inteligência Artificial e Ciência de Dados
-* **Repositório:** https://github.com/anafrnandes/pln_tp.git
 
 ---
 
